@@ -39,6 +39,8 @@ class HappyFish():
         self.logger.info('Updating the pwm modules for the first time')
         self.result = self.electronics.updateModule()
 
+        self.reconnect_count = 0
+
         if self.result == True:
             self.logger.info('PWM modules updated. Electronics working as intended')
         else:
@@ -60,7 +62,7 @@ class HappyFish():
 
                 self.electronics.updateModule()
 
-                if not self.reconnecting and self.connection.connection_closed:
+                if not self.reconnecting and self.connection.connection_closed and self.reconnect_count < 5:
                     self.logger.critical('Connection appears to be closed... Ending connection and Will reconnect after 60 seconds')
                     self.connection.end()
                     self.reconnecting = True
@@ -93,3 +95,4 @@ class HappyFish():
         self.connection = Connection(self.logger, self.settings, self.mqtt_email, self.mqtt_password)
         self.connection.start()
         self.reconnecting = False
+        self.reconnect_count = self.reconnect_count + 1
