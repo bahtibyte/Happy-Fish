@@ -1,4 +1,5 @@
 from datetime import datetime
+from alerts import Alerts
 
 class Stages:
     pre_sun_rise = 'PRE Sun-Rise'
