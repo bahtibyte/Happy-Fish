@@ -1,5 +1,5 @@
 from Adafruit_PCA9685 import PCA9685
-from schedule import Schedule
+from schedule import Schedule, Stages
 import sys
 
 class Electronics:
@@ -125,7 +125,7 @@ class Electronics:
             for rack in self.rgb_pins.keys():
 
                 # Manual RGB override is enabled for the current rack, 3rd shelf
-                if self.settings.rgbs[rack][0] == True:
+                if self.settings.rgbs[rack][0] == True and self.schedule.stage != Stages.pre_sun_rise and self.schedule.stage != Stages.post_sun_set:
                     colors = self.settings.rgbs[rack][1]
                     self.pwm_rgb.set_pwm(self.rgb_pins[rack][0], 0, self.getBrightness(colors[0], 255))
                     self.pwm_rgb.set_pwm(self.rgb_pins[rack][1], 0, self.getBrightness(colors[1], 255))
@@ -136,6 +136,7 @@ class Electronics:
                     self.pwm_rgb.set_pwm(self.rgb_pins[rack][0], 0, 0)
                     self.pwm_rgb.set_pwm(self.rgb_pins[rack][1], 0, 0)
                     self.pwm_rgb.set_pwm(self.rgb_pins[rack][2], 0, 0)
+
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             self.logger.critical(f'Unable to update the pwm modules. [{exc_type} line # {exc_tb.tb_lineno}]')
