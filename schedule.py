@@ -62,6 +62,8 @@ class Schedule:
 
         if current_stage != self.stage:
             self.logger.info('Scheduled stage changed from \''+self.stage+'\' to \''+current_stage+'\'')
+            alerts = Alerts(self.logger)
+            alerts.alertInfo('Scheduled stage changed from \''+self.stage+'\' to \''+current_stage+'\'')
             self.stage = current_stage
         
         if self.stage == Stages.pre_sun_rise or self.stage == Stages.post_sun_set:
