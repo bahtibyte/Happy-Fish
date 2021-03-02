@@ -26,8 +26,8 @@ class HappyFish():
         alerts = Alerts(self.logger)
         alerts.alertInfo('Raspberry Pi: Running HappyFish.py')
 
-        self.mqtt_email = os.environ("MQTT_EMAIL")
-        self.mqtt_password = os.environ("MQTT_PASSWORD")
+        self.mqtt_email = os.environ["MQTT_EMAIL"]
+        self.mqtt_password = os.environ["MQTT_PASSWORD"]
 
         self.logger.info('='*50)
         self.logger.info('Running main script')

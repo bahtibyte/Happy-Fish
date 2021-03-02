@@ -3,11 +3,11 @@ import os
 
 class Alerts:
         
-    account_sid = os.environ("TWILIO_ACCOUNT_SID")
-    auth_token = os.environ("TWILIO_AUTH_TOKEN")
+    account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+    auth_token = os.environ["TWILIO_AUTH_TOKEN"]
 
-    number = os.environ("TWILIO_NUMBER")
-    to = os.environ("TWILIO_MY_NUMBER")
+    number = os.environ["TWILIO_NUMBER"]
+    to = os.environ["TWILIO_MY_NUMBER"]
 
     def __init__(self, logger):
         self.client = Client(self.account_sid, self.auth_token)
