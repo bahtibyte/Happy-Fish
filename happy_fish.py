@@ -40,6 +40,7 @@ class HappyFish():
         self.result = self.electronics.updateModule()
 
         self.reconnect_count = 0
+        self.reconnect_delay = 60
 
         if self.result == True:
             self.logger.info('PWM modules updated. Electronics working as intended')
@@ -62,11 +63,13 @@ class HappyFish():
 
                 self.electronics.updateModule()
 
-                if not self.reconnecting and self.connection.connection_closed and self.reconnect_count < 5:
-                    self.logger.critical('Connection appears to be closed... Ending connection and Will reconnect after 60 seconds')
+                if not self.reconnecting and self.connection.connection_closed and self.reconnect_count < 15:
+                    self.logger.critical(f'Connection appears to be closed... Ending connection and will reconnect after {self.reconnect_delay/60} min(s)')
+                    alerts = Alerts(self.logger)
+                    alerts.alertCritical(f'Connection appears to be closed. Reconnecting again in {self.reconnect_delay/60} min(s). Reconnect count is {self.reconnect_count}')
                     self.connection.end()
                     self.reconnecting = True
-                    self.timer = Timer(60, self.reconnect, args=None, kwargs=None)
+                    self.timer = Timer(self.reconnect_delay, self.reconnect, args=None, kwargs=None)
                     self.timer.start()
 
         except KeyboardInterrupt:

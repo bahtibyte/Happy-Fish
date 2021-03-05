@@ -4,6 +4,7 @@ from threading import Thread
 from time import sleep, time
 from settings import Settings
 from alerts import Alerts
+from happy_fish import HappyFish
 
 class Stage:
     ignore = 'Ignore'
@@ -53,8 +54,10 @@ class Connection:
 
         self.logger.info('Initialized a connection with broker \''+self.broker+'\' with username \''+email+'\'')
     
-    def start(self):
+    def start(self, happyfish):
         self.logger.info('Attempting to connect to MQTT broker')
+
+        self.happyfish = happyfish
 
         self.connection_thread = Thread(target=self.connect, args=())
         self.connection_thread.start()
@@ -131,21 +134,24 @@ class Connection:
         if rc == 0:
             self.established_connection = True
             self.logger.info('Connected with MQTT broker, result code: '+str(rc))
+            self.happyfish.reconnect_delay = 60
             alerts = Alerts(self.logger)
             alerts.alertInfo('Raspberry Pi connected to MQTT successfully')
         else:
             self.established_connection = False
             self.failed_connection = True
             self.logger.critical('Bad connection, result code: '+str(rc))
+            self.happyfish.reconnect_delay = self.happyfish.reconnect_delay * 2
             alerts = Alerts(self.logger)
             alerts.alertCritical(f'Raspberry Pi could NOT connect to MQTT. Bad Connection. RC {rc}')
 
     def on_disconnect(self, client, userdata, flags, rc=0):
         self.logger.critical('Connection disconnected, return code: '+str(rc))
+        self.happyfish.reconnect_delay = self.happyfish.reconnect_delay * 2
         self.connection_closed = True
         self.time_ended = time()
         alerts = Alerts(self.logger)
-        alerts.alertCritical(f'Raspberry Pi disconnected from the MQTT server. RC {rc}')
+        alerts.alertCritical(f'RPi disconnected from the MQTT server. RC {rc}')
 
     def on_message(self, client, userdata, message):
         if self.stage == Stage.ignore:
