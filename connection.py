@@ -4,7 +4,6 @@ from threading import Thread
 from time import sleep, time
 from settings import Settings
 from alerts import Alerts
-from happy_fish import HappyFish
 
 class Stage:
     ignore = 'Ignore'
