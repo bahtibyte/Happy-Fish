@@ -52,7 +52,7 @@ class HappyFish():
             exit()
 
         self.connection = Connection(self.logger, self.settings, self.mqtt_email, self.mqtt_password)
-        self.connection.start()
+        self.connection.start(self)
         self.reconnecting = False
 
     def start(self):
@@ -96,6 +96,6 @@ class HappyFish():
     def reconnect(self):
         self.logger.critical('Attempting to reconnect again')
         self.connection = Connection(self.logger, self.settings, self.mqtt_email, self.mqtt_password)
-        self.connection.start()
+        self.connection.start(self)
         self.reconnecting = False
         self.reconnect_count = self.reconnect_count + 1
